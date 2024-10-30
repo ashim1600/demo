@@ -35,13 +35,25 @@ This project scrapes users in the city of ${city} with over ${followers} followe
   - created_at: When they joined Github
 
 - `repositories.csv`: Contains the following fields about each repository:
-  - repository name
+  - login: The Github user ID (login) of the owner
+  - full_name: Full name of the repository
   - description
   - language
   - created_at
-  - updated_at
-  - pushed_at
   - stargazers_count
   - watchers_count
-  - forks_count
-  - open_issues_count
+  - has_projects
+  - has_wiki
+  - license_name
+
+### Explanation of how the data was scraped
+
+The data was scraped using the GitHub API. The script first fetches users in the specified city with over the specified number of followers. Then, for each user, it fetches up to 500 most recently pushed repositories. The data is then saved to `users.csv` and `repositories.csv` files.
+
+### Most interesting and surprising fact
+
+The most interesting and surprising fact found after analyzing the data is that a significant number of repositories do not have a license specified. This can lead to legal issues for developers who use these repositories without proper understanding of the licensing terms.
+
+### Actionable recommendation for developers
+
+Based on the analysis, it is recommended that developers always specify a license for their repositories. This helps other developers understand the terms under which they can use the code and avoid potential legal issues.

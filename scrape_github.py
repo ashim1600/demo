@@ -31,12 +31,15 @@ def get_repositories(username):
     repos = []
     page = 1
     while True:
-        url = f"{BASE_URL}/users/{username}/repos?page={page}"
+        url = f"{BASE_URL}/users/{username}/repos?page={page}&per_page=100"
         response = requests.get(url)
         data = response.json()
         if not data:
             break
         repos.extend(data)
+        if len(repos) >= 500:
+            repos = repos[:500]
+            break
         page += 1
     return repos
 
@@ -73,19 +76,19 @@ def save_users_to_csv(users, filename):
 def save_repositories_to_csv(repositories, filename):
     with open(filename, mode='w', newline='', encoding='utf-8') as file:
         writer = csv.writer(file)
-        writer.writerow(["repository name", "description", "language", "created_at", "updated_at", "pushed_at", "stargazers_count", "watchers_count", "forks_count", "open_issues_count"])
+        writer.writerow(["login", "full_name", "description", "language", "created_at", "stargazers_count", "watchers_count", "has_projects", "has_wiki", "license_name"])
         for repo in repositories:
             writer.writerow([
-                repo["name"],
+                repo["owner"]["login"],
+                repo["full_name"],
                 repo["description"] or "",
                 repo["language"] or "",
                 repo["created_at"],
-                repo["updated_at"],
-                repo["pushed_at"],
                 repo["stargazers_count"],
                 repo["watchers_count"],
-                repo["forks_count"],
-                repo["open_issues_count"]
+                repo["has_projects"],
+                repo["has_wiki"],
+                repo["license"]["name"] if repo["license"] else ""
             ])
 
 # Main function
